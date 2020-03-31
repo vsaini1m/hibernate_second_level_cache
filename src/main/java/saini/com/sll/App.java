@@ -1,5 +1,6 @@
 package saini.com.sll;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -29,8 +30,10 @@ public static void main(String[] args) {
 	ses1.beginTransaction();
 
 
+	Query q1=ses1.createQuery("from alien where id=111");
+	q1.setCacheable(true);
 
-	al=(alien)ses1.get(alien.class, 111);
+	al=(alien)q1.uniqueResult();
 	System.out.println(al);
 
 	ses1.getTransaction().commit();
@@ -43,9 +46,14 @@ public static void main(String[] args) {
 	ses2.beginTransaction();
 
 
-	al=(alien)ses2.get(alien.class, 111);
-	System.out.println(al);
 
+	Query q2=ses2.createQuery("from alien where id=111");
+	q2.setCacheable(true);
+
+	al=(alien)q2.uniqueResult();
+
+	System.out.println(al);
+	
 	ses2.getTransaction().commit();
 	
 	ses2.close();
